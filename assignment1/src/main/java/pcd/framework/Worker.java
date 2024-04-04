@@ -4,7 +4,7 @@ package pcd.framework;
 import java.util.concurrent.BlockingQueue;
 
 public class Worker implements Runnable {
-    private BlockingQueue<WorkerTask> tasksQueue;
+    private final BlockingQueue<WorkerTask> tasksQueue;
 
     public Worker(BlockingQueue<WorkerTask> tasksQueue) {
         this.tasksQueue = tasksQueue;

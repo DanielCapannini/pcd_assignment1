@@ -9,8 +9,9 @@ public class ReadWriteMonitorImpl implements ReadWriteMonitor {
 
     private int readers;
     private int writers;
-    private Lock mutex;
-    private Condition okToRead, okToWrite;
+    private final Lock mutex;
+    private final Condition okToRead;
+    private final Condition okToWrite;
 
     public ReadWriteMonitorImpl() {
         this.readers = 0;

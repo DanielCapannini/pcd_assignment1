@@ -8,20 +8,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class MasterImpl implements Master {
 
-    private BlockingQueue<WorkerTask> taskQueue;
-    private List<Thread> workers;
-
-    public MasterImpl() {
-        this.taskQueue = new LinkedBlockingQueue<>();
-        this.workers = new ArrayList<Thread>();
-
-        for (int i = 0; i < SetupConstants.NUM_WORKERS.getValue(); i++) {
-            Worker worker = new Worker(taskQueue);
-            Thread workerThread = new Thread(worker);
-            workers.add(workerThread);
-            workerThread.start();
-        }
-    }
+    private final BlockingQueue<WorkerTask> taskQueue;
+    private final List<Thread> workers;
 
     public MasterImpl(int numWorkers) {
         this.taskQueue = new LinkedBlockingQueue<>();
