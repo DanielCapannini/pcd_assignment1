@@ -20,7 +20,6 @@ public abstract class CarAgent extends AbstractAgent {
 	protected double acceleration;
 	protected double deceleration;
 
-	/* percept and action retrieved and submitted at each step */
 	protected CarPercept currentPercept;
 	protected Optional<Action> selectedAction;
 
@@ -28,11 +27,11 @@ public abstract class CarAgent extends AbstractAgent {
 			double initialPos,
 			double acc,
 			double dec,
-			double vmax) {
+			double vMax) {
 		super(id);
 		this.acceleration = acc;
 		this.deceleration = dec;
-		this.maxSpeed = vmax;
+		this.maxSpeed = vMax;
 		this.env = env;
 		env.registerNewCar(this, road, initialPos);
 	}
@@ -80,7 +79,4 @@ public abstract class CarAgent extends AbstractAgent {
 		return currentSpeed;
 	}
 
-	protected void log(String msg) {
-		System.out.println("[CAR " + this.getObjectId() + "] " + msg);
-	}
 }
