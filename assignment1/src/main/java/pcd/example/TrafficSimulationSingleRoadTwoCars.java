@@ -4,8 +4,6 @@ package pcd.example;
 import pcd.engine.AbstractSimulation;
 import pcd.base.*;
 
-import java.util.concurrent.CyclicBarrier;
-
 /**
  * 
  * Traffic Simulation about 2 cars moving on a single road, no traffic lights
@@ -21,8 +19,6 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation {
 
 		int t0 = 0;
 		int dt = 1;
-		CyclicBarrier barrier = new CyclicBarrier(2);
-		this.setBarrier(barrier);
 
 		this.setupTimings(t0, dt);
 
@@ -30,9 +26,9 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation {
 		this.setupEnvironment(env);
 
 		Road r = env.createRoad(new P2d(0, 300), new P2d(1500, 300));
-		CarAgent car1 = new CarAgentBasic("car-1", env, r, 0, 0.1, 0.2, 8, barrier);
+		CarAgent car1 = new CarAgentBasic("car-1", env, r, 0, 0.1, 0.2, 8);
 		this.addAgent(car1);
-		CarAgent car2 = new CarAgentBasic("car-2", env, r, 100, 0.1, 0.1, 7, barrier);
+		CarAgent car2 = new CarAgentBasic("car-2", env, r, 100, 0.1, 0.1, 7);
 		this.addAgent(car2);
 		car1.start();
 		car2.start();

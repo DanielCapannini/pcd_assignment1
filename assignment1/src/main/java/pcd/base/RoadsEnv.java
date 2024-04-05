@@ -68,7 +68,6 @@ public class RoadsEnv extends AbstractEnvironment {
 
 		CarAgentInfo carInfo = registeredCars.get(agentId);
 		double pos = carInfo.getPos();
-		System.out.println(pos);
 		Road road = carInfo.getRoad();
 		Optional<CarAgentInfo> nearestCar = getNearestCarInFront(road, pos);
 		Optional<TrafficLightInfo> nearestSem = getNearestSemaphoreInFront(road, pos);

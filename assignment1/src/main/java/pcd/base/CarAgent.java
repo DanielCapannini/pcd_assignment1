@@ -5,8 +5,6 @@ import pcd.engine.AbstractEnvironment;
 import pcd.engine.Action;
 
 import java.util.Optional;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
 
 /**
  * 
@@ -26,20 +24,16 @@ public abstract class CarAgent extends AbstractAgent {
 	protected CarPercept currentPercept;
 	protected Optional<Action> selectedAction;
 
-	private CyclicBarrier barrier;
-
 	public CarAgent(String id, RoadsEnv env, Road road,
 			double initialPos,
 			double acc,
 			double dec,
-			double vmax,
-			CyclicBarrier barrier) {
+			double vmax) {
 		super(id);
 		this.acceleration = acc;
 		this.deceleration = dec;
 		this.maxSpeed = vmax;
 		this.env = env;
-		this.barrier = barrier;
 		env.registerNewCar(this, road, initialPos);
 	}
 
@@ -73,12 +67,7 @@ public abstract class CarAgent extends AbstractAgent {
 		} finally {
 			readWriteMonitor.releaseWrite();
 		}
-		try {
-			this.barrier.await();
-		} catch (InterruptedException | BrokenBarrierException e) {
-			throw new RuntimeException(e);
-		}
-    }
+	}
 
 	/**
 	 * 
