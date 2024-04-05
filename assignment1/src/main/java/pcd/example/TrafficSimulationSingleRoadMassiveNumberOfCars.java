@@ -6,6 +6,7 @@ import pcd.base.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CyclicBarrier;
 
 public class TrafficSimulationSingleRoadMassiveNumberOfCars extends AbstractSimulation {
 
@@ -20,7 +21,8 @@ public class TrafficSimulationSingleRoadMassiveNumberOfCars extends AbstractSimu
 
 	public void setup() {
 		this.setupTimings(0, 1);
-
+		CyclicBarrier barrier = new CyclicBarrier(numCars);
+		this.setBarrier(barrier);
 		RoadsEnv env = new RoadsEnv();
 		this.setupEnvironment(env);
 
@@ -39,7 +41,8 @@ public class TrafficSimulationSingleRoadMassiveNumberOfCars extends AbstractSimu
 					initialPos,
 					carAcceleration,
 					carDeceleration,
-					carMaxSpeed);
+					carMaxSpeed,
+					barrier);
 			this.agents.add(car);
 			this.addAgent(car);
 			/* no sync with wall-time */

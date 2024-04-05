@@ -1,6 +1,7 @@
 package pcd.base;
 
 import java.util.Optional;
+import java.util.concurrent.CyclicBarrier;
 
 /**
  * 
@@ -30,11 +31,12 @@ public class CarAgentExtended extends CarAgent {
 	private int waitingTime;
 
 	public CarAgentExtended(String id, RoadsEnv env, Road road,
-			double initialPos,
-			double acc,
-			double dec,
-			double vmax) {
-		super(id, env, road, initialPos, acc, dec, vmax);
+							double initialPos,
+							double acc,
+							double dec,
+							double vmax,
+							CyclicBarrier barrier) {
+		super(id, env, road, initialPos, acc, dec, vmax, barrier);
 		state = CarAgentState.STOPPED;
 	}
 

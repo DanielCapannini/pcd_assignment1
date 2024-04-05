@@ -83,7 +83,6 @@ public class ReadWriteMonitorImpl implements ReadWriteMonitor {
             okToRead.signalAll();
         } catch (Exception e) {
             Thread.currentThread().interrupt();
-            return;
         } finally {
             mutex.unlock();
         }

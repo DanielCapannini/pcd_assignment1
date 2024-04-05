@@ -3,6 +3,8 @@ package pcd.example;
 import pcd.engine.AbstractSimulation;
 import pcd.base.*;
 
+import java.util.concurrent.CyclicBarrier;
+
 /**
  * 
  * Traffic Simulation about a number of cars
@@ -18,7 +20,8 @@ public class TrafficSimulationSingleRoadSeveralCars extends AbstractSimulation {
 	public void setup() {
 
 		this.setupTimings(0, 1);
-
+		CyclicBarrier barrier = new CyclicBarrier(60);
+		this.setBarrier(barrier);
 		RoadsEnv env = new RoadsEnv();
 		this.setupEnvironment(env);
 
@@ -41,7 +44,8 @@ public class TrafficSimulationSingleRoadSeveralCars extends AbstractSimulation {
 					initialPos,
 					carAcceleration,
 					carDeceleration,
-					carMaxSpeed);
+					carMaxSpeed,
+					barrier);
 			this.addAgent(car);
 		}
 

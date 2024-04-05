@@ -6,12 +6,14 @@ import pcd.framework.MasterImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 /**
  * Base class for defining concrete simulations
  * 
  */
-public abstract class AbstractSimulation {
+public abstract class AbstractSimulation extends Thread{
 
 	/* environment of the simulation */
 	private AbstractEnvironment env;
@@ -40,13 +42,14 @@ public abstract class AbstractSimulation {
 	private boolean isRunning = false;
 	private int steps = 0;
 	private int currentStep = 0;
-	private final Master master;
+	//private final Master master;
+	private CyclicBarrier barrier;
 
 	protected AbstractSimulation() {
 		agents = new ArrayList<AbstractAgent>();
 		listeners = new ArrayList<SimulationListener>();
 		toBeInSyncWithWallTime = false;
-		this.master = new MasterImpl(20);
+		//this.master = new MasterImpl(20);
 	}
 
 	/**
@@ -55,6 +58,10 @@ public abstract class AbstractSimulation {
 	 * 
 	 */
 	public abstract void setup();
+
+	protected void setBarrier(CyclicBarrier barrier){
+		this.barrier = barrier;
+	}
 
 	/**
 	 * Method running the simulation for a number of steps,
@@ -76,6 +83,11 @@ public abstract class AbstractSimulation {
 
 		this.notifyReset(t, agents, env);
 
+
+		for (var a : agents) {
+			a.start();
+		}
+
 		long timePerStep = 0;
 		while (true) {
 			while (!isRunning || this.currentStep > this.steps) {
@@ -93,7 +105,7 @@ public abstract class AbstractSimulation {
 			env.step(dt);
 			for (var agent : agents) {
 				agent.setDt(dt);
-				this.master.submitTask(agent::step);
+				//this.master.submitTask(agent::step);
 			}
 
 			t += dt;
@@ -110,11 +122,11 @@ public abstract class AbstractSimulation {
 			if (stop) {
 				break;
 			}
-		}
+        }
 
 		endWallTime = System.currentTimeMillis();
 		this.averageTimePerStep = timePerStep / this.steps;
-		this.master.shutdown();
+		//this.master.shutdown();
 	}
 
 	public void run(int numSteps) {
@@ -124,7 +136,7 @@ public abstract class AbstractSimulation {
 		/* initialize the env and the agents inside */
 		int t = t0;
 
-		// env.init();
+		env.init();
 		for (var a : agents) {
 			a.init(env);
 		}
@@ -134,6 +146,10 @@ public abstract class AbstractSimulation {
 		long timePerStep = 0;
 		int nSteps = 0;
 
+		for (var a : agents) {
+			a.start();
+		}
+
 		while (nSteps < numSteps) {
 
 			currentWallTime = System.currentTimeMillis();
@@ -141,10 +157,10 @@ public abstract class AbstractSimulation {
 			/* make a step */
 
 			env.step(dt);
-			for (var agent : agents) {
+			/*for (var agent : agents) {
 				agent.setDt(dt);
-				master.submitTask(agent::step);
-			}
+				//master.submitTask(agent::step);
+			}*/
 
 			t += dt;
 
@@ -160,7 +176,7 @@ public abstract class AbstractSimulation {
 
 		endWallTime = System.currentTimeMillis();
 		this.averageTimePerStep = timePerStep / numSteps;
-		this.master.shutdown();
+		//this.master.shutdown();
 	}
 
 	public long getSimulationDuration() {
@@ -177,9 +193,9 @@ public abstract class AbstractSimulation {
 		this.currentStep = 0;
 	}
 
-	public void stop() {
-		isRunning = false;
-	}
+	//public void stop() {
+	//	isRunning = false;
+	//}
 
 	public void reset() {
 		isRunning = false;
