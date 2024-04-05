@@ -13,13 +13,11 @@ import java.awt.*;
 
 public class RoadSimView extends JFrame implements SimulationListener {
 
-	private RoadSimViewPanel panel;
-	private AbstractSimulation simulation;
+	private final RoadSimViewPanel panel;
 	private static final int CAR_DRAW_SIZE = 10;
 
 	public RoadSimView(AbstractSimulation simulation) {
 		super("RoadSim View");
-		this.simulation = simulation;
 		setSize(1500, 600);
 
 		panel = new RoadSimViewPanel(1500, 600);
@@ -55,14 +53,14 @@ public class RoadSimView extends JFrame implements SimulationListener {
 
 		JPanel controlPanel = new JPanel();
 		controlPanel.setLayout(new BorderLayout());
-		controlPanel.add(buttonPanel, BorderLayout.NORTH); // Aggiungi i pulsanti in alto
-		controlPanel.add(stepsPanel, BorderLayout.CENTER); // Aggiungi il pannello dei passaggi al centro
+		controlPanel.add(buttonPanel, BorderLayout.CENTER); // Aggiungi i pulsanti in alto
+		controlPanel.add(stepsPanel, BorderLayout.AFTER_LAST_LINE); // Aggiungi il pannello dei passaggi al centro
 
 		JPanel cp = new JPanel();
 		LayoutManager layout = new BorderLayout();
 		cp.setLayout(layout);
 		cp.add(BorderLayout.CENTER, panel);
-		cp.add(BorderLayout.SOUTH, controlPanel); // Aggiungi il pannello di controllo con pulsanti e passaggi
+		cp.add(BorderLayout.NORTH, controlPanel); // Aggiungi il pannello di controllo con pulsanti e passaggi
 		setContentPane(cp);
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -86,7 +84,7 @@ public class RoadSimView extends JFrame implements SimulationListener {
 		panel.update(e.getRoads(), e.getAgentInfo(), e.getTrafficLights());
 	}
 
-	class RoadSimViewPanel extends JPanel {
+	static class RoadSimViewPanel extends JPanel {
 
 		List<CarAgentInfo> cars;
 		List<Road> roads;

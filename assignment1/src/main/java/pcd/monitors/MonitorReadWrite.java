@@ -1,6 +1,6 @@
 package pcd.monitors;
 
-public interface ReadWriteMonitor {
+public interface MonitorReadWrite {
 
     void requestWrite();
 

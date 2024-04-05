@@ -44,7 +44,7 @@ public abstract class CarAgent extends AbstractAgent {
 	 */
 	public void step() {
 		AbstractEnvironment env = this.getEnv();
-		var readWriteMonitor = env.getReadWriteMonitor();
+		var readWriteMonitor = env.getMonitorReadWrite();
 		readWriteMonitor.requestRead();
 		try {
 			/* sense */

@@ -1,8 +1,8 @@
 package pcd.base;
 
 
-import pcd.monitors.ReadWriteMonitor;
-import pcd.monitors.ReadWriteMonitorImpl;
+import pcd.monitors.MonitorReadWrite;
+import pcd.monitors.MonitorReadWriteImpl;
 import pcd.engine.AbstractEnvironment;
 import pcd.engine.Action;
 import pcd.engine.Percept;
@@ -22,14 +22,14 @@ public class RoadsEnv extends AbstractEnvironment {
 
 	/* cars situated in the environment */
 	private final HashMap<String, CarAgentInfo> registeredCars;
-	private final ReadWriteMonitor readWriteMonitor;
+	private final MonitorReadWrite readWriteMonitor;
 
 	public RoadsEnv() {
-		super("traffic-env");
+		super();
 		registeredCars = new HashMap<>();
 		trafficLights = new ArrayList<>();
 		roads = new ArrayList<>();
-		this.readWriteMonitor = new ReadWriteMonitorImpl();
+		this.readWriteMonitor = new MonitorReadWriteImpl();
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class RoadsEnv extends AbstractEnvironment {
 	}
 
 	@Override
-	public ReadWriteMonitor getReadWriteMonitor() {
+	public MonitorReadWrite getMonitorReadWrite() {
 		return this.readWriteMonitor;
 	}
 }

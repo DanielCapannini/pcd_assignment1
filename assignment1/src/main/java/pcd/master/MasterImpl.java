@@ -1,4 +1,4 @@
-package pcd.framework;
+package pcd.master;
 
 
 import java.util.ArrayList;
@@ -8,23 +8,22 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class MasterImpl implements Master {
 
-    private final BlockingQueue<WorkerTask> taskQueue;
+    private final BlockingQueue<Task> taskQueue;
     private final List<Thread> workers;
 
     public MasterImpl(int numWorkers) {
         this.taskQueue = new LinkedBlockingQueue<>();
-        this.workers = new ArrayList<Thread>();
-
+        this.workers = new ArrayList<>();
         for (int i = 0; i < numWorkers; i++) {
             Worker worker = new Worker(taskQueue);
-            Thread workerThread = new Thread(worker);
-            workers.add(workerThread);
-            workerThread.start();
+            Thread threadWorker = new Thread(worker);
+            workers.add(threadWorker);
+            threadWorker.start();
         }
     }
 
     @Override
-    public void submitTask(WorkerTask task) {
+    public void addTask(Task task) {
         try {
             taskQueue.put(task);
         } catch (InterruptedException e) {
@@ -33,11 +32,10 @@ public class MasterImpl implements Master {
     }
 
     @Override
-    public void shutdown() {
+    public void shutdownTask() {
         for (Thread worker : workers) {
             worker.interrupt();
         }
-
         for (Thread worker : workers) {
             try {
                 worker.join();

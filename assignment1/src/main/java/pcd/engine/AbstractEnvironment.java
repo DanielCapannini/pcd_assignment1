@@ -1,7 +1,7 @@
 package pcd.engine;
 
 
-import pcd.monitors.ReadWriteMonitor;
+import pcd.monitors.MonitorReadWrite;
 
 /**
  * 
@@ -10,14 +10,7 @@ import pcd.monitors.ReadWriteMonitor;
  */
 public abstract class AbstractEnvironment {
 
-	private final String id;
-
-	protected AbstractEnvironment(String id) {
-		this.id = id;
-	}
-
-	public String getId() {
-		return id;
+	protected AbstractEnvironment() {
 	}
 
 	/**
@@ -51,5 +44,5 @@ public abstract class AbstractEnvironment {
 	 */
 	public abstract void doAction(String agentId, Action act);
 
-	public abstract ReadWriteMonitor getReadWriteMonitor();
+	public abstract MonitorReadWrite getMonitorReadWrite();
 }

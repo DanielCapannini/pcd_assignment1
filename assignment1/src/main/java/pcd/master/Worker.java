@@ -1,12 +1,12 @@
-package pcd.framework;
+package pcd.master;
 
 
 import java.util.concurrent.BlockingQueue;
 
 public class Worker implements Runnable {
-    private final BlockingQueue<WorkerTask> tasksQueue;
+    private final BlockingQueue<Task> tasksQueue;
 
-    public Worker(BlockingQueue<WorkerTask> tasksQueue) {
+    public Worker(BlockingQueue<Task> tasksQueue) {
         this.tasksQueue = tasksQueue;
     }
 
@@ -14,7 +14,7 @@ public class Worker implements Runnable {
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
             try {
-                WorkerTask task = tasksQueue.take();
+                Task task = tasksQueue.take();
                 task.execute();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

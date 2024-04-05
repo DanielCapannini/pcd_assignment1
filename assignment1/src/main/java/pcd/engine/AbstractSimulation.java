@@ -1,8 +1,8 @@
 package pcd.engine;
 
 
-import pcd.framework.Master;
-import pcd.framework.MasterImpl;
+import pcd.master.Master;
+import pcd.master.MasterImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,6 @@ public abstract class AbstractSimulation {
 	 *
 	 */
 	public void run() {
-		// Master master = new MasterImpl(10);
 
 		startWallTime = System.currentTimeMillis();
 
@@ -93,7 +92,7 @@ public abstract class AbstractSimulation {
 			env.step(dt);
 			for (var agent : agents) {
 				agent.setDt(dt);
-				this.master.submitTask(agent::step);
+				this.master.addTask(agent::step);
 			}
 
 			t += dt;
@@ -114,7 +113,7 @@ public abstract class AbstractSimulation {
 
 		endWallTime = System.currentTimeMillis();
 		this.averageTimePerStep = timePerStep / this.steps;
-		this.master.shutdown();
+		this.master.shutdownTask();
 	}
 
 	public void run(int numSteps) {
@@ -124,7 +123,7 @@ public abstract class AbstractSimulation {
 		/* initialize the env and the agents inside */
 		int t = t0;
 
-		// env.init();
+		env.init();
 		for (var a : agents) {
 			a.init(env);
 		}
@@ -143,7 +142,7 @@ public abstract class AbstractSimulation {
 			env.step(dt);
 			for (var agent : agents) {
 				agent.setDt(dt);
-				master.submitTask(agent::step);
+				master.addTask(agent::step);
 			}
 
 			t += dt;
@@ -160,7 +159,7 @@ public abstract class AbstractSimulation {
 
 		endWallTime = System.currentTimeMillis();
 		this.averageTimePerStep = timePerStep / numSteps;
-		this.master.shutdown();
+		this.master.shutdownTask();
 	}
 
 	public long getSimulationDuration() {
@@ -171,27 +170,11 @@ public abstract class AbstractSimulation {
 		return averageTimePerStep;
 	}
 
-	public void start(int steps) {
-		isRunning = true;
-		this.steps = steps;
-		this.currentStep = 0;
-	}
 
 	public void stop() {
 		isRunning = false;
 	}
 
-	public void reset() {
-		isRunning = false;
-		steps = 0;
-		startWallTime = 0;
-		endWallTime = 0;
-		averageTimePerStep = 0;
-	}
-
-	public boolean isRunning() {
-		return this.isRunning;
-	}
 
 	public void elaborateSteps(int steps) {
 		isRunning = true;
@@ -248,7 +231,7 @@ public abstract class AbstractSimulation {
 				Thread.sleep(delay - wallTimeDT);
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+            throw new RuntimeException(ex);
+        }
 	}
 }
