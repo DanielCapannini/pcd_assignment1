@@ -33,6 +33,7 @@ public class MasterImpl implements Master {
 
     @Override
     public void shutdownTask() {
+        System.out.println(taskQueue.size());
         for (Thread worker : workers) {
             worker.interrupt();
         }

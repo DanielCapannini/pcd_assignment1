@@ -36,6 +36,7 @@ public class MonitorReadWriteImpl implements MonitorReadWrite {
             this.numWriter++;
         } catch (Exception e) {
             Thread.currentThread().interrupt();
+            throw new RuntimeException("ciao");
         } finally {
             mutex.unlock();
         }
@@ -50,6 +51,7 @@ public class MonitorReadWriteImpl implements MonitorReadWrite {
             okRead.signalAll();
         } catch (Exception e) {
             Thread.currentThread().interrupt();
+
         } finally {
             mutex.unlock();
         }
@@ -64,6 +66,7 @@ public class MonitorReadWriteImpl implements MonitorReadWrite {
                     okRead.await();
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
+                    throw new RuntimeException("ciao");
                 }
             }
             this.numReader++;

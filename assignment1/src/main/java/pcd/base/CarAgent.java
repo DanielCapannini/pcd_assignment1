@@ -19,7 +19,6 @@ public abstract class CarAgent extends AbstractAgent {
 	protected double currentSpeed;
 	protected double acceleration;
 	protected double deceleration;
-
 	protected CarPercept currentPercept;
 	protected Optional<Action> selectedAction;
 

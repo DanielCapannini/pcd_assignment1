@@ -46,7 +46,7 @@ public abstract class AbstractSimulation {
 		agents = new ArrayList<AbstractAgent>();
 		listeners = new ArrayList<SimulationListener>();
 		toBeInSyncWithWallTime = false;
-		this.master = new MasterImpl(20);
+		this.master = new MasterImpl(50);
 	}
 
 	/**
