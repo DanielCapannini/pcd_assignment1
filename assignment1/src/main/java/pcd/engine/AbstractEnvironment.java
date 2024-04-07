@@ -1,8 +1,6 @@
 package pcd.engine;
 
 
-import pcd.monitors.MonitorReadWrite;
-
 /**
  * 
  * Base class to define the environment of the simulation
@@ -44,5 +42,4 @@ public abstract class AbstractEnvironment {
 	 */
 	public abstract void doAction(String agentId, Action act);
 
-	public abstract MonitorReadWrite getMonitorReadWrite();
 }

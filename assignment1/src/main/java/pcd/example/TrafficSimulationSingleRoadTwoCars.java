@@ -30,8 +30,8 @@ public class TrafficSimulationSingleRoadTwoCars extends AbstractSimulation {
 		this.addAgent(car1);
 		CarAgent car2 = new CarAgentBasic("car-2", env, r, 100, 0.1, 0.1, 7);
 		this.addAgent(car2);
-		car1.start();
-		car2.start();
+		//car1.start();
+		//car2.start();
 
 		/* sync with wall-time: 25 steps per sec */
 		this.syncWithTime();

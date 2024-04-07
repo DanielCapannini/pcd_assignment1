@@ -5,7 +5,7 @@ package pcd.engine;
  * Base class for defining types of agents taking part to the simulation
  * 
  */
-public abstract class AbstractAgent extends Thread {
+public abstract class AbstractAgent {
 
 	private final String myId;
 	protected AbstractEnvironment env;
@@ -41,10 +41,6 @@ public abstract class AbstractAgent extends Thread {
 		return this.env;
 	}
 
-	@Override
-	public void run() {
-		step();
-	}
 
 	public void setDt(int dt) {
 		this.dt = dt;

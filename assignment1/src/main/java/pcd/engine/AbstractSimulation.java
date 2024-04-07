@@ -1,11 +1,12 @@
 package pcd.engine;
 
 
-import pcd.master.Master;
-import pcd.master.MasterImpl;
+import pcd.worker.Worker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 /**
  * Base class for defining concrete simulations
@@ -40,13 +41,11 @@ public abstract class AbstractSimulation {
 	private boolean isRunning = false;
 	private int steps = 0;
 	private int currentStep = 0;
-	private final Master master;
 
 	protected AbstractSimulation() {
 		agents = new ArrayList<AbstractAgent>();
 		listeners = new ArrayList<SimulationListener>();
 		toBeInSyncWithWallTime = false;
-		this.master = new MasterImpl(50);
 	}
 
 	/**
@@ -76,6 +75,15 @@ public abstract class AbstractSimulation {
 		this.notifyReset(t, agents, env);
 
 		long timePerStep = 0;
+
+		int nThread = Runtime.getRuntime().availableProcessors();
+		int barrierParts = Math.min(agents.size(), nThread) + 1;
+		CyclicBarrier barrier = new CyclicBarrier(barrierParts);
+
+		List<List<AbstractAgent>> parts = new ArrayList<List<AbstractAgent>>();
+		getPartsForWorker(nThread, parts);
+
+
 		while (true) {
 			while (!isRunning || this.currentStep > this.steps) {
 				try {
@@ -90,9 +98,17 @@ public abstract class AbstractSimulation {
 			/* make a step */
 
 			env.step(dt);
-			for (var agent : agents) {
-				agent.setDt(dt);
-				this.master.addTask(agent::step);
+
+			for (List<AbstractAgent> p : parts){
+				Worker worker = new Worker(p, barrier);
+				worker.setDt(dt);
+				worker.start();
+			}
+
+			try {
+				barrier.await();
+			} catch (InterruptedException | BrokenBarrierException e) {
+				throw new RuntimeException(e);
 			}
 
 			t += dt;
@@ -113,7 +129,6 @@ public abstract class AbstractSimulation {
 
 		endWallTime = System.currentTimeMillis();
 		this.averageTimePerStep = timePerStep / this.steps;
-		this.master.shutdownTask();
 	}
 
 	public void run(int numSteps) {
@@ -133,6 +148,14 @@ public abstract class AbstractSimulation {
 		long timePerStep = 0;
 		int nSteps = 0;
 
+		int nThread = Runtime.getRuntime().availableProcessors();
+		System.out.println(nThread);
+		int barrierParts = Math.min(agents.size(), nThread) + 1;
+		CyclicBarrier barrier = new CyclicBarrier(barrierParts);
+
+		List<List<AbstractAgent>> parts = new ArrayList<List<AbstractAgent>>();
+		getPartsForWorker(nThread, parts);
+
 		while (nSteps < numSteps) {
 
 			currentWallTime = System.currentTimeMillis();
@@ -140,9 +163,17 @@ public abstract class AbstractSimulation {
 			/* make a step */
 
 			env.step(dt);
-			for (var agent : agents) {
-				agent.setDt(dt);
-				master.addTask(agent::step);
+
+			for (List<AbstractAgent> p : parts){
+				Worker worker = new Worker(p, barrier);
+				worker.setDt(dt);
+				worker.start();
+			}
+
+			try {
+				barrier.await();
+			} catch (InterruptedException | BrokenBarrierException e) {
+				throw new RuntimeException(e);
 			}
 
 			t += dt;
@@ -159,7 +190,24 @@ public abstract class AbstractSimulation {
 
 		endWallTime = System.currentTimeMillis();
 		this.averageTimePerStep = timePerStep / numSteps;
-		this.master.shutdownTask();
+	}
+
+	private void getPartsForWorker(int nThread, List<List<AbstractAgent>> parts) {
+		int agentsSplitted = 0;
+		int partsSize = agents.size() / (nThread - 1);
+		if (partsSize == 0) {
+			partsSize = 1;
+		}
+		int nParts = Math.min(agents.size(), nThread);
+		for (int i = 0; i < nParts; i++) {
+			int to = agentsSplitted + partsSize;
+			if (i == nThread - 1) {
+				to = agents.size();
+			}
+			parts.add(new ArrayList<AbstractAgent>(
+					agents.subList(agentsSplitted, to)));
+			agentsSplitted += partsSize;
+		}
 	}
 
 	public long getSimulationDuration() {

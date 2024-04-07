@@ -42,15 +42,9 @@ public abstract class CarAgent extends AbstractAgent {
 	 */
 	public void step() {
 		AbstractEnvironment env = this.getEnv();
-		var readWriteMonitor = env.getMonitorReadWrite();
-		readWriteMonitor.requestRead();
-		try {
-			/* sense */
-			currentPercept = (CarPercept) env.getCurrentPercepts(getObjectId());
 
-		} finally {
-			readWriteMonitor.releaseRead();
-		}
+		currentPercept = (CarPercept) env.getCurrentPercepts(getObjectId());
+
 
 		/* decide */
 
@@ -58,13 +52,9 @@ public abstract class CarAgent extends AbstractAgent {
 
 		decide(dt);
 
-		// /* act */
-		readWriteMonitor.requestWrite();
-		try {
-            selectedAction.ifPresent(action -> env.doAction(getObjectId(), action));
-		} finally {
-			readWriteMonitor.releaseWrite();
-		}
+
+		selectedAction.ifPresent(action -> env.doAction(getObjectId(), action));
+
 	}
 
 	/**
